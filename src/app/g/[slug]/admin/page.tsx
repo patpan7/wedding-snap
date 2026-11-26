@@ -21,6 +21,7 @@ import {
   Trash2,
   Settings,
   Play,
+  Film,
 } from 'lucide-react';
 
 interface MediaItem {
@@ -47,6 +48,7 @@ function AdminDashboardContent() {
   const [eventTitle, setEventTitle] = useState('');
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [selectedGuest, setSelectedGuest] = useState<string>('ALL');
+  const [mediaTypeFilter, setMediaTypeFilter] = useState<'ALL' | 'PHOTOS' | 'VIDEOS'>('ALL');
   const [selectedMedia, setSelectedMedia] = useState<Set<string>>(new Set());
   const [bulkActionMode, setBulkActionMode] = useState(false);
 
@@ -286,8 +288,13 @@ function AdminDashboardContent() {
     } else if (selectedGuest !== 'ALL') {
       result = media.filter((m) => m.guest_id === selectedGuest);
     }
+    if (mediaTypeFilter === 'PHOTOS') {
+      result = result.filter((m) => m.mime_type.startsWith('image/'));
+    } else if (mediaTypeFilter === 'VIDEOS') {
+      result = result.filter((m) => m.mime_type.startsWith('video/'));
+    }
     return result;
-  }, [media, selectedGuest]);
+  }, [media, selectedGuest, mediaTypeFilter]);
 
   const handleDownloadZip = async () => {
     const approvedItems = media.filter((m) => m.is_approved);
@@ -679,6 +686,41 @@ const handleCardExport = async (mode: 'download' | 'print') => {
               {info.label} ({info.count})
             </button>
           ))}
+        </div>
+
+        {/* Φίλτρο Τύπου Μέσου */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2">
+          <Film className="w-4 h-4 text-stone-400 shrink-0" />
+          <button
+            onClick={() => setMediaTypeFilter('ALL')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium shrink-0 transition ${
+              mediaTypeFilter === 'ALL'
+                ? 'bg-stone-800 text-white'
+                : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-100'
+            }`}
+          >
+            Όλα ({media.length})
+          </button>
+          <button
+            onClick={() => setMediaTypeFilter('PHOTOS')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium shrink-0 transition ${
+              mediaTypeFilter === 'PHOTOS'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+            }`}
+          >
+            Φωτογραφίες ({media.filter((m) => m.mime_type.startsWith('image/')).length})
+          </button>
+          <button
+            onClick={() => setMediaTypeFilter('VIDEOS')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium shrink-0 transition ${
+              mediaTypeFilter === 'VIDEOS'
+                ? 'bg-violet-600 text-white'
+                : 'bg-white border border-violet-200 text-violet-700 hover:bg-violet-50'
+            }`}
+          >
+            Βίντεο ({media.filter((m) => m.mime_type.startsWith('video/')).length})
+          </button>
         </div>
 
         {/* Ευχές Καλεσμένων */}
