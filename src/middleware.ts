@@ -25,7 +25,7 @@ const CSP_HEADER = [
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "img-src 'self' data: blob: https:",
+  "img-src 'self' data: blob: https: https://pub-63e38a3b3519459ebab3d9dd40d24d22.r2.dev",
   "connect-src 'self' https://*.supabase.co https://*.r2.cloudflarestorage.com wss://*.supabase.co",
   "media-src 'self' blob: https:",
   "frame-ancestors 'none'",
